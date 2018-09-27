@@ -4,6 +4,7 @@
 
 |  | DATE | CATEGORY | DESCRIPTION |
 | --- | --- | ------- | --- |
+| 17 | [1800927](week_04/180927.md) | JavaScript | number 타입 |
 | 16 | [1800926](과제/사전과제.md) | JavaScript |개강 전 사전과제 보너스 퀴즈 중 자바스크립트 알고리즘|
 | 15 | [1800921](week_03/1800921.md) | HTML, CSS | 반응형 이미지 이슈, table |
 | 14 | [180920](week_03/180920.md) | HTML, CSS | 반응형 웹 디자인, 애니메이션 성능 |
