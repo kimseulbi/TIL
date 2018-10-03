@@ -4,9 +4,12 @@
 
 |  | DATE | CATEGORY | DESCRIPTION |
 | --- | --- | ------- | --- |
-| 17 | [1800927](week_04/180927.md) | JavaScript | number 타입 |
-| 16 | [1800926](과제/사전과제.md) | JavaScript |개강 전 사전과제 보너스 퀴즈 중 자바스크립트 알고리즘|
-| 15 | [1800921](week_03/1800921.md) | HTML, CSS | 반응형 이미지 이슈, table |
+| 20 | [181002](week_05/181002.md) | JavaScript | 객체, 배열 |
+| 19 | [181001](week_05/181001.md) | JavaScript | 함수, 제어 구문 |
+| 18 | [180928](week_04/180928.md) | JavaScript | string 타입, boolean 타입, null과 undefined |
+| 17 | [180927](week_04/180927.md) | JavaScript | number 타입 |
+| 16 | [180926](과제/사전과제.md) | JavaScript |개강 전 사전과제 보너스 퀴즈 중 자바스크립트 알고리즘|
+| 15 | [180921](week_03/1800921.md) | HTML, CSS | 반응형 이미지 이슈, table |
 | 14 | [180920](week_03/180920.md) | HTML, CSS | 반응형 웹 디자인, 애니메이션 성능 |
 | 13 | [180919](week_03/180919.md) | HTML, CSS | 이미지 콘텐츠 처리방법, target 속성, counter사용법(순서형 목록 스타일링 방법론), 인용문, IR기법, 푸터작업, WAI-ARIA |
 | 12 | [180918](week_03/180918.md) | HTML, CSS | 폼관련 요소, jQuery와 DOM, script 비동기 속성, 게시판작업, calc(), 말줄임 표현, 트위터 작업 |
