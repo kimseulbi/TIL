@@ -104,7 +104,7 @@ this.setState((prevState, props) => ({
 }));
 ```
 
-## 객체 개신에 함수를 사용하면서 얻을 수 있는 또 다른 장점은 바로 상태를 갱신하는 방법을 격리된 상태에서 테스트 해볼 수 있다는 점입니다. 단순히 `this.setState(fn)`을 사용하는 함수를 추출한 다음에 독립적으로 둔 다음에 테스트가 가능하도록 작성할 수 있습니다. 이 함수는 입력으로 간단히 출력을 확인할 수 있는 순수 함수여야 합니다.
+객체 개신에 함수를 사용하면서 얻을 수 있는 또 다른 장점은 바로 상태를 갱신하는 방법을 격리된 상태에서 테스트 해볼 수 있다는 점입니다. 단순히 `this.setState(fn)`을 사용하는 함수를 추출한 다음에 독립적으로 둔 다음에 테스트가 가능하도록 작성할 수 있습니다. 이 함수는 입력으로 간단히 출력을 확인할 수 있는 순수 함수여야 합니다.
 
 출처:
 https://edykim.com/ko/post/learn-react-before-using-redux/?fbclid=IwAR29TU8sYX5ttzG2zt2wefdNFLCinLJwj4s076Gm-UkXT8xbHaS_rTnczGs
