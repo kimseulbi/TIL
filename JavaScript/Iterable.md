@@ -3,9 +3,14 @@
 반복 가능한 객체 (iterable object)는 for...of 구문과 함께 ES2015에서 도입되었습니다. 반복 가능한 객체를 다른 객체와 구분짓는 특징은, 객체의 `Symbol.iterator` 속성에 **특별한 형태의 함수**가 들어있는 여부로 확인 할 수 있습니다.
 
 ```js
-// iterable 객체를 만들어내는 생성자
+// iterable 객체를 만들어내는 생성자인 String
 const str = "hello";
 str[Symbol.iterator]; // [Function]
+
+// Num
+const num = 2;
+num[Symbol.iterator];
+// undefined
 ```
 
 객체의 `Sysmbol.iterator` 속성에 특정 형태의 함수가 들어있다면, 이를 반복 가능한 객체 혹은 줄여서 **iterable**이라 부르고, **해당 객체는 iterable protocol을 만족한다**라고 말합니다. 이런 객체들에 대해서 ES2015애서 추가된 다양한 기능들을 사용할 수있습니다.
@@ -39,9 +44,11 @@ for (let c of "hello") {
 
 // spread 연산자
 const characters = [..."hello"];
+//[ 'h', 'e', 'l', 'l', 'o' ]
 
 // 분해대입
 const [c1, c2] = "hello";
+console.log(c1); // h
 
 // `Array.from`은 iterable 혹은 array-like 객체를 인수로 받습니다.
 Array.from("hello");
@@ -51,6 +58,8 @@ const characters1 = "hello".split("");
 ```
 
 ---
+
+왜 그냥 for문은 되지 않고 for...of은 무엇이길래 될까?
 
 🔖 `for...of` 구문
 ES2015가 나오기 이전까지는 `for`구문이 배열을 순회하는 데에도 많이 사용되었습니다. 하지만 근래에는 배열의 `forEach`메소드나 `for..of`구문이 더 많이 쓰이는 편입니다.
@@ -99,9 +108,145 @@ const obj = {
 };
 ```
 
-Generator 함수를 호출하면 객체가 생성되는데, 이 객체는 Iterable protocol을 만족합니다. 즉, `Symbol.iterator`
+---
+
+🔖 함수를 정의하는 방법은 **함수 선언**과 **함수 표현식** 2가지가 있다.
+
+```js
+function funcName() {..} // 함수 선언
+
+const funcName = function() {..} // 함수 표현식
+```
+
+함수 선언으로 정의된 함수는 **함수 선언 끌어올림(hoisting)**이 발생하며, 함수 실행 코드가 선언보다 먼저 있어도 정상적으로 동작한다.
+
+---
+
+Generator 함수를 호출하면 객체가 생성되는데, 이 객체는 Iterable protocol을 만족합니다. 즉, `Symbol.iterator` 속성을 갖고 있습니다.
+
+```js
+function* gen1() {
+  //...
+}
+
+// `gen1`를 호출하면 iterable이 반환됩니다.
+const iterable = gen1();
+
+iterable[Symbol.iterator]; // [Function]
+```
+
+Generator 함수 안에 `yield` 라는 특별한 키워드를 사용할 수 있습니다. Generator 함수 안에서 `yield` 키워드는 `return`과 유사한 역활을 하며, iterable의 기능을 사용할 때 **`yield` 키워드 뒤에 있는 값들을 순서대로 넘겨줍니다.**
+
+```js
+function* numberGen() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+// 1, 2, 3이 순서대로 출력됩니다.
+for (let n of numberGen()) {
+  console.log(n);
+}
+```
+
+`yield*`표현식을 사용하면, 다른 generator 함수에서 넘겨준 값을 대신 넘겨줄 수도 있습니다.
+
+```js
+function* numberGen() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+function* numberGen2() {
+  yield* numberGen();
+  yield* numberGen();
+}
+
+// 1, 2, 3, 1, 2, 3이 순서대로 출력됩니다.
+for (let n of numberGen2()) {
+  console.log(n);
+}
+```
+
+`yield` 키워드를 제외하면, generator 함수 내부의 동작 방식은 일반적인 함수와 별반 다르지 않습니다. 즉, 다른 함수에서 할 수 있는 일이라면 generator 함수 안에서도 모두 할 수있습니다.
+
+```js
+// 등차수열 생성하기
+function* range(start = 0, end = Infinity, step = 1) {
+  for (let i = start; i < end; i += step) {
+    yield i;
+  }
+}
+
+// 피보나치 수열 생성하기
+function* fibonacci(count = Infinity) {
+  let x = 1;
+  let y = 1;
+  for (let i = 0; i < count; i++) {
+    yield x;
+    [x, y] = [y, x + y];
+  }
+}
+
+// 하나의 항목을 계속 넘겨주기
+function* repeat(item, count = Infinity) {
+  for (let i = 0; i < count; i++) {
+    yield item;
+  }
+}
+
+// 여러 요소를 반복해서 넘겨주기
+function* repeatMany(array) {
+  while (true) {
+    for (let item of array) {
+      yield item;
+    }
+  }
+}
+```
+
+Generator 함수를 사용할 때 주의할 점이 있습니다.
+
+- Generator 함수로 부터 생성된 iterable은 한 번만 사용될 수 있씁니다.
+- Generator 함수 내부에서 정의된 일반 함수에서는 `yield`키워트를 사용할 수 없습니다.
+
+```js
+// Generator 함수로부터 생성된 iterable은 한 번만 사용될 수 있습니다.
+function* gen() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+const iter = gen();
+
+for (let n of iter) {
+  // 잘 출력됩니다.
+  console.log(n);
+}
+for (let n of iter) {
+  // `iter`는 한 번 사용되었으므로, 이 코드는 실행되지 않습니다.
+  console.log(n);
+}
+```
+
+```js
+// Generator 함수 내부에서 정의된 일반 함수에서는 `yield` 키워드를 사용할 수 없습니다.
+function* gen2() {
+  // 아예 문법 오류가 납니다. (Unexpected token)
+  function fakeGen() {
+    yield 1;
+    yield 2;
+    yield 3;
+  }
+  fakeGen();
+}
+```
 
 # 참고할 링크
 
 [MDN for...of](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Statements/for...of)
 [ES6: Iterable, Iterator](https://blog.qodot.me/post/es6-iterable-iterator/)
+[MDN Generator 함수](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Statements/function*)
