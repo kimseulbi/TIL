@@ -1,3 +1,7 @@
+#Iteration
+Iteration 프로토콜에는 두가지 프로토콜이 있다. 한기지는 `iterable 프로토콜`이고 또 다른 한가지는 `iterator 프로토콜`이다.
+ES2015에서 추가된 이두가지는 새로운 빌트인 혹인 구문이 아닌 프로토콜 즉, 규약이다. 이들은 같은 규칙을 준수하는 객체에 의해 구현될수 있습니다.
+
 #Iterable
 
 반복 가능한 객체 (iterable object)는 for...of 구문과 함께 ES2015에서 도입되었습니다. 반복 가능한 객체를 다른 객체와 구분짓는 특징은, 객체의 `Symbol.iterator` 속성에 **특별한 형태의 함수**가 들어있는 여부로 확인 할 수 있습니다.
@@ -245,8 +249,152 @@ function* gen2() {
 }
 ```
 
+## 3. Iterator Protocol
+
+이제 iterable의 동작 원리를 살혀보겠습니다. **(iterable과 iterator를 잘 구분하세요)**
+
+앞에서 'iterable 객체는 iterable protocol을 만족한다. 즉, `Symbol.iterator`속성에 **특별한 형태의 함수가 저장되어 있다**'고 했습니다.
+
+Iterable protocol(이터레이션 프로토콜)을 만족하려면, `Symbol.iterator`속성에 저장되어 있는 함수는 itertor(이터레이터)객체를 반환해야 합니다.
+
+✏️Iterator 객체는 아래의 특별한 조건을 만족하는 객체입니다.
+
+- Iterator는 `next`라는 메소드를 갖습니다.
+- `next` 메소드는 다음 두 속성을 갖는 객체를 반환해야 합니다.
+  - `done` - 반복이 모두 끝났는지 나탸냅니다.
+  - `value` - 현재 순서의 값을 나타냅니다.
+
+위 조건을 **Iterator protocol**이라고 합니다.
+
+##### 이터레이션 프로토콜(Iteration protocol)
+
+![이터레이션 프로토콜(Iteration protocol)](./asset/iteration-protocol.png "이터레이션 프로토콜(Iteration protocol)")
+
+```js
+// 문자열은 iterable이므로 이로부터 iterator를 생성할 수 있습니다.
+const strIterator = "go"[Symbol.iterator]();
+strIterator.next(); // { value: 'g', done: false }
+strIterator.next(); // { value: 'o', done: false }
+strIterator.next(); // { value: undefined, done: true }
+strIterator.next(); // { value: undefined, done: true }
+
+// generator 함수로부터 생성된 객체 역시 iterable이므로 이로부터 iterator를 생성할 수 있습니다.
+function* gen() {
+  yield 1;
+  yield 2;
+}
+const genIterator = gen()[Symbol.iterator]();
+genIterator.next(); // { value: 1, done: false }
+genIterator.next(); // { value: 2, done: false }
+genIterator.next(); // { value: undefined, done: true }
+genIterator.next(); // { value: undefined, done: true }
+```
+
+iterable 만들기. 앞에 예저에 있었던 `range` 함수를 generator 함수를 사용하지 않고 똑같이 구현
+
+```js
+function range(start = 0, end = Infinity, step = 1) {
+  // `range` 함수는 iterable을 반환합니다.
+  return {
+    currentValue: start,
+    [Symbol.iterator]() {
+      // iterable의 `Symbol.iterator` 메소드는 iterator를 반환해야 합니다.
+      return {
+        next: () => {
+          if (this.currentValue < end) {
+            const value = this.currentValue;
+            this.currentValue += step;
+            return {
+              done: false,
+              value
+            };
+          } else {
+            return {
+              done: true
+            };
+          }
+        }
+      };
+    }
+  };
+}
+```
+
+Generator 함수를 사용했을 때보다 훨씬 복잡합니다. 이 떄문에 iterator protocol을 직접 구현하는 대신 generator함수를 사용하는 경우가 많습니다. 다만, `next` 메소드를 사용하면 iterable을 세부적으로 제어할 수 있으므로, iterator 대해서 알아둘 필요가 있습니다.
+
+## 4. Generator와 Iterator
+
+Generator 함수로부터 만들어진 객체는 일반적인 iterable처럼 쓸 수 있지만, iterator와 관련된 특별한 성질을 갖고 있습니다.
+
+첫번째로, generator 함수로부터 만들어진 객체는 **iterable protocol과 iterator protocol을 동시에 만족합니다.**
+
+```js
+function* gen() {
+  // ...
+}
+
+const genObj = gen();
+genObj[Symbol.iterator]().next === genObj.next; // true
+```
+
+즉, `Symbol.iterator`를 통해 iterator를 생성하지 않고도 바로 `next`를 호출할 수 있습니다.
+
+```js
+function* gen() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+const iter = gen();
+
+iter.next(); // { value: 1, done: false }
+iter.next(); // { value: 2, done: false }
+iter.next(); // { value: 3, done: false }
+iter.next(); // { value: undefined, done: true }
+```
+
+두번째로, generator 함수 안에서 `return` 키워드를 사용하면 반복이 바로 끝나면서 `next` 메소드에서 반환되는 객체의 속성에 앞의 반환값이 저장됩니다. 다만, `return`을 통해 반환된 값이 반복 절차에 포함되지는 않습니다.
+
+```js
+function* gen() {
+  yield 1;
+  return 2; // generator 함수는 여기서 종료됩니다.
+  yield 3;
+}
+
+const iter = gen();
+
+iter.next(); // { value: 1, done: false }
+iter.next(); // { value: 2, done: true }
+iter.next(); // { value: undefined, done: true }
+
+// `1`만 출력됩니다.
+for (let v of gen()) {
+  console.log(v);
+}
+```
+
+세 번째로, generator 함수로부터 생성된 객체의 `next` 메소드에 인수를 주어서 호출하면, generator 함수가 멈췄던 부분의 `yield` 표현식의 결과값은 앞에서 받은 인수가 됩니다.
+
+```js
+function* gen() {
+  const received = yield 1;
+  console.log(received);
+}
+
+const iter = gen();
+iter.next(); // { value: 1, done: false }
+
+// 'hello'가 출력됩니다.
+iter.next("hello"); // { value: undefined, done: true }
+```
+
+Generator 함수의 이런 성질은 비동기 프로그래밍을 위해 활용되기도 합니다. 이에 대한 자세한 내용은 **비동기 프로그램밍**에서 다룹니다.
+
 # 참고할 링크
 
 [MDN for...of](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Statements/for...of)
 [ES6: Iterable, Iterator](https://blog.qodot.me/post/es6-iterable-iterator/)
 [MDN Generator 함수](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Statements/function*)
+[이터레이션 프로토콜(iteration protocol)과 for-of 루프](https://poiemaweb.com/es6-iteration-for-of)
