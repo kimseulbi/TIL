@@ -28,11 +28,11 @@ num[Symbol.iterator];
 
 - String
 - Array
-- TypedArry
+- TypedArray
 - Map
 - Set
 
-즉, **Iterable** 순회가능한 객체로써 `[Symbol.iterator]` 메소드를 구현하고 있고, iterator 객체를 반환하는 객체를 뜻합니다. 이런 스펙을 iterable protocol 이라고 합니다.
+이터러블은 **순회 가능한 자료 구조이다.** `Symbol.iterator`를 프로퍼티 키로 사용한 메소드를 구현하는 것에 의해 순회 가능한 자료 구조인 이터러블이 된다.
 
 ## 1. Iterable의 사용
 
@@ -127,8 +127,6 @@ function funcName() {..} // 함수 선언
 const funcName = function() {..} // 함수 표현식
 ```
 
-함수 선언으로 정의된 함수는 **함수 선언 끌어올림(hoisting)**이 발생하며, 함수 실행 코드가 선언보다 먼저 있어도 정상적으로 동작한다.
-
 ---
 
 Generator 함수를 호출하면 객체가 생성되는데, 이 객체는 Iterable protocol을 만족합니다. 즉, `Symbol.iterator` 속성을 갖고 있습니다.
@@ -218,8 +216,8 @@ function* repeatMany(array) {
 
 Generator 함수를 사용할 때 주의할 점이 있습니다.
 
-- Generator 함수로 부터 생성된 iterable은 한 번만 사용될 수 있씁니다.
-- Generator 함수 내부에서 정의된 일반 함수에서는 `yield`키워트를 사용할 수 없습니다.
+- Generator 함수로 부터 생성된 iterable은 한 번만 사용될 수 있습니다.
+- Generator 함수 내부에서 정의된 일반 함수에서는 `yield`키워드를 사용할 수 없습니다.
 
 ```js
 // Generator 함수로부터 생성된 iterable은 한 번만 사용될 수 있습니다.
@@ -254,6 +252,8 @@ function* gen2() {
 }
 ```
 
+제너레이터는 이터러블의 구현과 비동기 함수의 호출 차단 등에 유용합니다.
+
 ## 3. Iterator Protocol
 
 이제 iterable의 동작 원리를 살혀보겠습니다. **(iterable과 iterator를 잘 구분하세요)**
@@ -266,10 +266,12 @@ Iterable protocol(이터러블 프로토콜)을 만족하려면, `Symbol.iterato
 
 - Iterator는 `next`라는 메소드를 갖습니다.
 - `next` 메소드는 다음 두 속성을 갖는 객체를 반환해야 합니다.
-  - `done` - 반복이 모두 끝났는지 나탸냅니다.
+  - `done` - 반복이 모두 끝났는지 나타냅니다.
   - `value` - 현재 순서의 값을 나타냅니다.
 
 위 조건을 **Iterator protocol**이라고 합니다.
+
+이터레이터는 **순회 가능한 객체이다.** `Symbol.iterator`를 프로퍼티 키로 사용한 메소드는 이터레이터를 반환한다. 이터레이터는 순회 가능한 자료 구조인 이터러블의 각 요소를 순회하기 위한 포인터로서 **next 메소드**를 갖는다. **next 메소드는 value, done 프로퍼티**를 갖는 객체(iterator result)를 반환하며 이 메소드를 호출하여 이터러블 객체를 순회하며 단계별로 제어할 수 있다.
 
 ```js
 // 문자열은 iterable이므로 이로부터 iterator를 생성할 수 있습니다.
@@ -291,7 +293,7 @@ genIterator.next(); // { value: undefined, done: true }
 genIterator.next(); // { value: undefined, done: true }
 ```
 
-iterable 만들기. 앞에 예저에 있었던 `range` 함수를 generator 함수를 사용하지 않고 똑같이 구현
+iterable 만들기. 앞에 예제에 있었던 `range` 함수를 generator 함수를 사용하지 않고 똑같이 구현
 
 ```js
 function range(start = 0, end = Infinity, step = 1) {
@@ -396,9 +398,14 @@ Generator 함수의 이런 성질은 비동기 프로그래밍을 위해 활용�
 # 참고할 링크
 
 [MDN for...of](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Statements/for...of)
+
 [ES6: Iterable, Iterator](https://blog.qodot.me/post/es6-iterable-iterator/)
+
 [MDN Generator 함수](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Statements/function*)
+
 [이터레이션 프로토콜(iteration protocol)과 for-of 루프](https://poiemaweb.com/es6-iteration-for-of)
+
+[제너레이터](https://poiemaweb.com/es6-generateor)
 
 # 면접 질문
 
