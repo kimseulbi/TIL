@@ -7,7 +7,7 @@ ES2015에서 추가된 이 두 가지는 새로운 빌트인 혹은 구문이 �
 
 ![이터레이션 프로토콜(Iteration protocol)](./asset/iteration-protocol.png "이터레이션 프로토콜(Iteration protocol)")
 
-#Iterable (이터러블)
+# Iterable (이터러블)
 
 반복 가능한 객체 (iterable object)는 for...of 구문과 함께 ES2015에서 도입되었습니다. 반복 가능한 객체를 다른 객체와 구분짓는 특징은, 객체의 `Symbol.iterator` 속성에 **특별한 형태의 함수**가 들어있는 여부로 확인 할 수 있습니다.
 
