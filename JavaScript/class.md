@@ -1,4 +1,4 @@
-#클래스
+# 클래스
 
 ## 1. ES2015 class
 
@@ -579,7 +579,6 @@ https://jongmin92.github.io/2017/06/18/JavaScript/class/
 
 1. Class 는 무엇이고, Prototype, fucntion의 ES5 스펙만으로 Class를 구현할수 있는가?
 1. ES6 클래스와 ES5 함수 생성자의 차이점은 무엇입니까?
-   ES5에서 상속을 사용하는 것이 훨씬 더 상세하며 ES6 버전은 이해하고 기억하기가 더 쉽습니다.
 
 ```js
 // ES5 함수 생성자
@@ -596,4 +595,5 @@ class Person {
 ```
 
 3. 클래스 상속보다 객체 구성을 선호한다는 것은 무엇을 의미하는가?
+
    https://lee-hyuna.github.io/2017/12/21/Javscript/%EB%A9%B4%EC%A0%91%EC%A7%88%EB%AC%B801/
