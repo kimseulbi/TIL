@@ -1,8 +1,12 @@
-#Iteration
+#Iteration(이터레이션)
 Iteration 프로토콜에는 두가지 프로토콜이 있다. 한기지는 `iterable 프로토콜`이고 또 다른 한가지는 `iterator 프로토콜`이다.
-ES2015에서 추가된 이두가지는 새로운 빌트인 혹인 구문이 아닌 프로토콜 즉, 규약이다. 이들은 같은 규칙을 준수하는 객체에 의해 구현될수 있습니다.
+ES2015에서 추가된 이 두 가지는 새로운 빌트인 혹은 구문이 아닌 프로토콜 즉, 규약이다. 이들은 같은 규칙을 준수하는 객체에 의해 구현될 수 있다.
 
-#Iterable
+## 이터레이션 프로토콜(Iteration protocol)
+
+![이터레이션 프로토콜(Iteration protocol)](./asset/iteration-protocol.png "이터레이션 프로토콜(Iteration protocol)")
+
+#Iterable (이터러블)
 
 반복 가능한 객체 (iterable object)는 for...of 구문과 함께 ES2015에서 도입되었습니다. 반복 가능한 객체를 다른 객체와 구분짓는 특징은, 객체의 `Symbol.iterator` 속성에 **특별한 형태의 함수**가 들어있는 여부로 확인 할 수 있습니다.
 
@@ -255,7 +259,7 @@ function* gen2() {
 
 앞에서 'iterable 객체는 iterable protocol을 만족한다. 즉, `Symbol.iterator`속성에 **특별한 형태의 함수가 저장되어 있다**'고 했습니다.
 
-Iterable protocol(이터레이션 프로토콜)을 만족하려면, `Symbol.iterator`속성에 저장되어 있는 함수는 itertor(이터레이터)객체를 반환해야 합니다.
+Iterable protocol(이터러블 프로토콜)을 만족하려면, `Symbol.iterator`속성에 저장되어 있는 함수는 itertor(이터레이터)객체를 반환해야 합니다.
 
 ✏️Iterator 객체는 아래의 특별한 조건을 만족하는 객체입니다.
 
@@ -265,10 +269,6 @@ Iterable protocol(이터레이션 프로토콜)을 만족하려면, `Symbol.iter
   - `value` - 현재 순서의 값을 나타냅니다.
 
 위 조건을 **Iterator protocol**이라고 합니다.
-
-##### 이터레이션 프로토콜(Iteration protocol)
-
-![이터레이션 프로토콜(Iteration protocol)](./asset/iteration-protocol.png "이터레이션 프로토콜(Iteration protocol)")
 
 ```js
 // 문자열은 iterable이므로 이로부터 iterator를 생성할 수 있습니다.
@@ -398,3 +398,8 @@ Generator 함수의 이런 성질은 비동기 프로그래밍을 위해 활용�
 [ES6: Iterable, Iterator](https://blog.qodot.me/post/es6-iterable-iterator/)
 [MDN Generator 함수](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Statements/function*)
 [이터레이션 프로토콜(iteration protocol)과 for-of 루프](https://poiemaweb.com/es6-iteration-for-of)
+
+# 면접 질문
+
+1. Iterable과 Iterator이 무엇인가?
+1. Generator함수에 대해 설명하세요

@@ -6,10 +6,8 @@ ES2015 이전까지는 비슷한 종류 객체를 많이 만들어내기 위해 
 
 ES2015에서 도입된 **클래스**는 생성자의 기능을 대체합니다. `class` 표현식을 사용하면, 생성자와 같은 기능을 하는 함수를 훨씬 더 깔끔한 문법으로 정의할 수 있습니다.
 
-메서드에 `constructor`라는 이름을 붙이면 이 메서드는 해당 클래스의 생성자 함수 역활을 합니다.
-
 ```js
-// 클래스
+// 클래스 기본 코드
 class Person {
   // 이전에서 사용하던 생성자 함수는 클래스 안에 `cosntructor`라는 이름으로 정의합니다.
   constructor({ name, age }) {
@@ -59,10 +57,153 @@ class Person {
 
 🔖 호이스팅(hosting)
 `var`로 선언된 변수는 내부적으로 함수 혹은 파일의 맨 위로 끌어올려지는 과정을 거치기 때문에, 같은 스코프 안에만 있다면 변수가 선언되기 전에도 해당 변수에 접근할 있는 현상
+함수 또는 var로 선언된 변수
+
+- var는 함수 스코프이기 때문에 함수 내부에서 맨 상단으로 끌어올려짐.
 
 ---
 
-## 2. 메소드 정의하기
+## 2. ES6 Class 문법
+
+JavaScript **Class** 는 ECMAScript 6을 통해 소개되었습니다. ES6의 Class는 기존 prototype 기반의 상속을 보다 명료하게 사용할 수 있도록 문법을 제공합니다. 이를 Syntatic Sugar라고 부르기도 합니다.
+
+> Syntatic Sugar : 읽고 표현하는것을 더 쉽게 하기 위해서 고안된 프로그래밍 언어 문법을 말합니다.
+
+JavaScript를 ES6를 통해 처음 접하시는 분들은 알아두셔야할 것이 JavaScript의 Class는 다른 객체지향 언어(C++, C#, Java, Python, Ruby 등...)에서 사용되는 Class 문법과는 다르다는 것입니다. JavaScript에는 Class라는 개념이 없습니다. Class가 없기 때문에 기본적으로 Class 기반의 상속도 불가능합니다. 대신 다른 언어에는 존재하지 않는 **프로토타입(Prototype)**이라는 것이 존재합니다. JavaScript는 이 **prototype을 기반으로 상속을 흉내내도록 구현해 사용합니다.**
+
+## 3. Class 정의
+
+JavaScript에서 Class는 사실 함수입니다. 함수를 함수 선언과 함수 표현식으로 정의할 수 있듯이 class 문법도 class 선언과 class 표현식 두가지 방법으로 정의가 가능합니다.
+
+JavaScript 엔진은 function 키워드를 만나면 Function 오브젝트를 생성하듯, class 키워드를 만나면 Class 오브젝트를 생성합니다. class는 클래스를 선언하는 키워드이고 Class 오브젝트는 엔진이 class 키워드로 생성한 오브젝트입니다.
+
+### Class 선언
+
+함수 선언과 달리 클래스 선언은 호이스팅이 일어나지 않기 때문에, 클래스를 사용하기 위해서는 먼저 선언을 해야합니다. 그렇지 않으면 ReferenceError 가 발생합니다.
+
+```js
+class People {
+  constructor(name) {
+    this.name = name;
+  }
+
+  say() {
+    console.log("My name is " + this.name);
+  }
+}
+```
+
+### Class 표현식
+
+Class 표현식은 이름을 가질 수도 있고 갖지 않을 수도 있습니다.
+
+```js
+const People = class People {
+  constructor(name) {
+    this.name = name;
+  }
+
+  say() {
+    console.log("My name is " + this.name);
+  }
+};
+
+const People = class {
+  constructor(name) {
+    this.name = name;
+  }
+
+  say() {
+    console.log("My name is " + this.name);
+  }
+};
+```
+
+## 4. 인스턴스의 생성
+
+[🌟강력 추천! PoiemaWeb- 클래스](https://poiemaweb.com/es6-class)
+
+클래스의 인스턴스를 생성하려면 new 연산자와 함께 constructor(생성자)를 호출한다.
+
+```js
+class Foo {}
+
+const foo = new Foo();
+```
+
+위 코드에서 new 연산자와 함께 호출한 Foo는 클래스의 이름이 아니라 constructor이다. 표현식이 아닌 선언식으로 정의한 클래스의 이름은 constructor와 동일하다.
+
+```js
+console.log(Foo === Foo.prototype.constructor); // true
+```
+
+new 연산자를 사용하지 않고 constructor를 호출하면 타입 에러(TypeError)가 발생한다. constructor는 new 연산자 없이 호출할 수 없다.
+
+```js
+class Foo {}
+
+const foo = Foo(); // TypeError: Class constructor Foo cannot be invoked without 'new'
+```
+
+## 5. constructor
+
+constructor는 인스턴스를 생성하고 클래스 프로퍼티를 초기화하기 위한 특수한 메소드이다. constructor는 클래스 내에 한 개만 존재할 수 있으며 만약 클래스가 2개 이상의 constructor를 포함하면 문법 에러(SyntaxError)가 발생한다. 인스턴스를 생성할 때 new 연산자와 함께 호출한 것이 바로 constructor이며 constructor의 파라미터에 전달한 값은 클래스 프로퍼티에 할당한다.
+
+constructor는 생략할 수 있다. constructor를 생략하면 클래스에 `constructor() {}`를 포함한 것과 동일하게 동작한다. 즉, 빈 객체를 생성한다. 따라서 클래스 프로퍼티를 선언하려면 인스턴스를 생성한 이후, 클래스 프로퍼티를 동적 할당해야 한다.
+
+```js
+class Foo {}
+
+const foo = new Foo();
+console.log(foo); // Foo {}
+
+// 클래스 프로퍼티의 동적 할당 및 초기화
+foo.num = 1;
+console.log(foo); // Foo&nbsp;{ num: 1 }
+```
+
+constructor는 인스턴스의 생성과 동시에 클래스 프로퍼티의 생성과 초기화를 실행한다.
+
+```js
+class Foo {
+  // constructor는 인스턴스의 생성과 동시에 클래스 프로퍼티의 생성과 초기화를 실행한다.
+  constructor(num) {
+    this.num = num;
+  }
+}
+
+const foo = new Foo(1);
+
+console.log(foo); // Foo { num: 1 }
+```
+
+## 7. 클래스 프로퍼티
+
+클래스 몸체(class body)에는 메소드만 선언할 수 있다. 클래스 바디에 클래스 프로퍼티(멤버 변수)를 선언하면 문법 에러(SyntaxError)가 발생한다.
+
+```js
+class Foo {
+  name = ""; // SyntaxError
+
+  constructor() {}
+}
+```
+
+클래스 프로퍼티의 선언과 초기화는 반드시 constructor 내부에서 실시한다.
+
+```js
+class Foo {
+  constructor(name = "") {
+    this.name = name; // 클래스 프로퍼티의 선언과 초기화, public 클래스 프로퍼티
+  }
+}
+const foo = new Foo("Lee");
+console.log(foo); // Foo { name: 'Lee' }, 클래스 외부에서 참조할수 있다.
+```
+
+constructor 내부에서 선언한 클래스 프로퍼티는 클래스의 인스턴스를 가리키는 this에 바인딩한다. 이로써 클래스 프로퍼티는 클래스가 생성할 인스턴스의 프로퍼티가 되며, 클래스의 인스턴스를 통해 클래스 외부에서 언제나 참조할 수 있다. 즉, 언제나 public이다.
+
+## 6. 메소드 정의하기
 
 클래스의 메소드를 정의할 때는 객체 리터럴에서 사용하던 문법과 유사한 문법을 사용합니다.
 
@@ -225,7 +366,7 @@ for (let n of new Gen()) {
 }
 ```
 
-## 3. 클래스 필드(Class Field)
+## 7. 클래스 필드(Class Field)
 
 클래스 블록 안에서 할당 연산자(=)를 이용해 인스턴스 속성을 지정할 수 있는 문법을 **클래스 필드(class field)**라고 합니다.
 
@@ -248,7 +389,7 @@ console.log(new Counter().count); // 10
 
 클래스 필드는 아직 정식 표준으로 채택된 기능은 아닙니다. 아직 이 기능을 구현한 브라우저는 없는 상태이고, Babel, TypeScript 등의 트랜스파일러를 통해 일부 기능을 사용할 수 있습니다.
 
-#### 클래스 필드와 this
+### 클래스 필드와 this
 
 `class` 블록은 새로운 블록 스코프를 형성하고, 이 내부에서 사용된 `this`는 인스턴스 객체를 가리키게 됩니다.
 
@@ -281,7 +422,7 @@ new MyClass().getA(); // 1
 2번의 성질로 **메소드를 값으로 다루어야 할 경우**에는 일반적인 메소드 대신 화살표 함수가 사용되는 경우가 종종 있습니다. 다만, 일반적인 메소드와 달리, 클래스 필드를 통해 정의한 메소드는 **인스턴스를 생성할 때마다 새로 생성되기 때문에** 메모리를 더 차지하게 되므로 주의해서 사용해야 합니다.
 메소드를 다른 함수로 넘겨 줘야 되는 경우는 화살표 함수를 사용 하는것이 좋습니다.
 
-## 4. 클래스 상속
+## 8. 클래스 상속
 
 클래스 상속기능을 통해 한 클래스의 기능을 다른 클래스에서 **재사용**할 수 있습니다.
 
@@ -412,7 +553,7 @@ s.introduce(); // 제 이름은 윤아준입니다. 저는 3학년입니다.
 
 자바스크립트는 부모는 한명입니다. 다중 상속은 불가능합니다.
 
-## 5. 클래스 상속과 프로토타입 상속
+## 9. 클래스 상속과 프로토타입 상속
 
 클래스 상속은 내부적으로 프로토타입 상속 기능을 활용하고 있습니다. 아래 코드의 클래스 상속에 대한 프로토타입 체인을 그림으로 나타내보면 다음과 같이 됩니다.
 
@@ -430,4 +571,29 @@ const student = new Student();
 
 [JavaScript로 만나는 세상-클래스](https://helloworldjavascript.net/pages/270-class.html)
 
-[🌟강력 추천! PoiemaWeb- 클래스](https://poiemaweb.com/es6-class)
+[ES6 class의 기능을 ES05기능비교 및 차이점](https://gomugom.github.io/is-class-only-a-syntactic-sugar/)
+
+https://jongmin92.github.io/2017/06/18/JavaScript/class/
+
+# 면접 질문
+
+1. Class 는 무엇이고, Prototype, fucntion의 ES5 스펙만으로 Class를 구현할수 있는가?
+1. ES6 클래스와 ES5 함수 생성자의 차이점은 무엇입니까?
+   ES5에서 상속을 사용하는 것이 훨씬 더 상세하며 ES6 버전은 이해하고 기억하기가 더 쉽습니다.
+
+```js
+// ES5 함수 생성자
+function Person(name) {
+  this.name = name;
+}
+
+// ES6 클래스
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+}
+```
+
+3. 클래스 상속보다 객체 구성을 선호한다는 것은 무엇을 의미하는가?
+   https://lee-hyuna.github.io/2017/12/21/Javscript/%EB%A9%B4%EC%A0%91%EC%A7%88%EB%AC%B801/
