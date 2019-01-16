@@ -4,7 +4,9 @@
 
 > ECMAScript는 스크립트 언어의 표준이며 JavaScript 언어는 ECMAScript 표준을 기반으로 합니다.
 
-ES는 자바스크립트를 이루는 코어스크립트 언어로써, 다양한 환경에서 운용될 수 있게 확장성을 갖고 있기 때문에 사용처가 웹환경으로 국한되어있지는 않습니다. 즉, 자바스크립트를 웹브라우저에서 들어갈 수 있도록 `BOM`과 `COM`을 함께 사용하는 확장성이 되었습니다. 이러한 확장성들은 ES버전에 따른 문법과 기능의 확장을 가능하게 합니다.
+ES는 자바스크립트를 이루는 코어스크립트 언어로써, 다양한 환경에서 운용될 수 있게 확장성을 갖고 있기 때문에 사용처가 웹환경으로 국한되어있지는 않습니다.
+
+자바스크립트를 웹브라우저에서 들어갈 수 있도록 `BOM`과 `COM`을 함께 사용하는 확장성이 되었습니다. 이러한 확장성들은 ES버전에 따른 문법과 기능의 확장을 가능하게 합니다.
 
 ```
 자바스크립트= ECMAScript + BOM + DOM
@@ -170,73 +172,14 @@ const { a, b } = { a: 1, b: 2 };
 console.log(a, b); // 1 2
 ```
 
-### 5. 향상된 객체 리터럴 (다시 읽어볼 필요가 있음...)
+### 5. 향상된 객체 리터럴 (읽어볼 필요가 있음...)
 
-ES5에서는 아래와 같이 JSON을 사용해서 객체 리터럴을 만들수 있습니다.
+- 프로퍼티 이름을 생략할 수 있다
+- 객체 리터럴 내부에서도 프로퍼티 키를 동적으로 생성
+- 메소드 선언 할때 function 키워드 생략
+- `__proto__` 로 다른객체를 직접 바인딩 하여 상속
 
-```js
-var serviceBase = { port: 3000, url: "azat.co" },
-  getAccounts = function() {
-    return [1, 2, 3];
-  };
-
-var accountServiceES5 = {
-  port: serviceBase.port,
-  url: serviceBase.url,
-  getAccounts: getAccounts,
-  toString: function() {
-    return JSON.stringify(this.valueOf());
-  },
-  getUrl: function() {
-    return "http://" + this.url + ":" + this.port;
-  },
-  valueOf_1_2_3: getAccounts()
-};
-```
-
-위 예시와 달리 serviceBase를 확장하길 원한다면 Object.create 로 프로토타입화하여 상속 받을 수 있다.
-
-```js
-let accountServiceES5ObjectCreate = {
-  getAccounts: getAccounts,
-  toString: function() {
-    return JSON.stringify(this.valueOf());
-  },
-  getUrl: function() {
-    return "http://" + this.url + ":" + this.port;
-  },
-  valueOf_1_2_3: getAccounts()
-};
-accountServiceES5ObjectCreate.__proto__ = Object.create(serviceBase);
-```
-
-accountServiceES5ObjectCreate와 accountServiceES5는 동일하게 사용할 수 있으나 다른 구조를 가진다. accountServiceES5ObjectCreate는 accountServiceES5와 다르게 `__proto__` 에 `port` 와 `url` 속성을 가진 객체를 담고 있다.
-
-ES6에서는 아래와 같이 처리할 수 있다.
-
-```js
-var serviceBase = { port: 3000, url: "azat.co" },
-  getAccounts = function() {
-    return [1, 2, 3];
-  };
-var accountService = {
-  __proto__: serviceBase,
-  getAccounts,
-  toString() {
-    return JSON.stringify(super.valueOf());
-  },
-  getUrl() {
-    return "http://" + this.url + ":" + this.port;
-  },
-  ["valueOf_" + getAccounts().join("_")]: getAccounts()
-};
-```
-
-위 예시에 대해 ES5와의 차이를 요약하면 아래와 같다.
-
-- `__proto__`속성을 사용해서 바로 프로토타입을 설정할 수 있다.
-- `getAccounts: getAccounts`, 대신 `getAccounts, 를 사용할 수 있다 (변수명으로 속성 이름을 지정).
-- `[ 'valueOf_' + getAccounts().join('_') ]` 와 같이 동적으로 속성 이름을 정의할 수 있다.
+https://poiemaweb.com/es6-enhanced-object-property
 
 ### 6. 화살표 함수
 
@@ -369,8 +312,6 @@ calculateTotalAmount(true); //0
 ### 9. 클래스
 
 ES2015에는 `class`키워트가 추가되어 ES5의 prototype 기반 상속보다 명확하게 `class`를 정의할 수 있다.
-
-위 예제를 프로토타입 관점에서 표현해 보면 아래와 같다.
 
 ```js
 // ES5
