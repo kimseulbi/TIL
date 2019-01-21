@@ -22,7 +22,7 @@ SPA는 기본적으로 웹 애플리케이션에 필요한 **모든 정적 리�
 
 `전통적인 웹 페이지 방식 = SSR`
 
-**"서버에서 렌더링이 일어나는 경우"**를 말합니다.
+**서버에서 렌더링이 일어나는 경우**를 말합니다.
 기존에 존재하던 방식으로 사용자가 웹페이지에 접근할 때, 서버에 페이지에 대한 요청을 하며 서버에서는 html, view와 같은 리소스들을 어떻게 보여질지 해석하고 렌더링하여 사용자에게 반환합니다. 이는 요청시마다 새로고침이 일어나면 서버에 새로운 페이지에 대한 요청을 하는 방식입니다.
 
 간단하게 설명하면 먹고 싶은것이 **있을 때마다 슈퍼마켓에 가는것**과 비슷합니다.
@@ -31,8 +31,9 @@ SPA는 기본적으로 웹 애플리케이션에 필요한 **모든 정적 리�
 ![](https://cdn-images-1.medium.com/max/1600/1*jJkEQpgZ8waQ5P-W5lhxuQ.png)
 
 ```
-SSR의 경우 브라우저에 대한 서버의 응답은 렌더링 준비가 된 페이지의 HTML이고 사용자는 모든 상황이 진행되는 동안 페이지를 볼 수 있습니다.\
-[참고] SSR에서는 빈페이지가 깜빡이고 SSR에서는 실제로 발생하지 않습니다. 대부분의 사람들은 모든 이미지가 로드 될 때 제거되는 서버 응답에서 로드되는 이미지를 보내야 피할 수 있습니다.
+SSR의 경우 브라우저에 대한 서버의 응답은 렌더링 준비가 된 페이지의 HTML이고 사용자는 모든 상황이 진행되는 동안 페이지를 볼 수 있습니다.
+[참고] SSR에서는 빈페이지가 깜빡이고 SSR에서는 실제로 발생하지 않습니다.
+대부분의 사람들은 모든 이미지가 로드 될 때 제거되는 서버 응답에서 로드되는 이미지를 보내야 피할 수 있습니다.
 ```
 
 ### SSR 특징
@@ -92,10 +93,23 @@ CSR의 경우 브라우저가 자바스크립트에 대한 링크가 있는 빈 
 - SSR은 View를 서버에서 전부 렌더링하여 내려주므로 HTML에 모든 컨텐츠가 저장되어 있기 때문에 SEO 적용에 큰 문제가 없습니다.
 
 ```
-SPA는 서버 렌더링 방식이 아닌 자바스크립트 기반 비동기 모델(클라이언트 렌더링 방식)이다. 따라서 SEO는 언제나 단점으로 부각되어 왔던 이슈이다. 하지만 SPA는 정보의 제공을 위한 웹페이지보다는 애플리케이션에 적합한 기술이므로 SEO 이슈는 심각한 문제로 볼 수 없다. Angular 또는 React 등의 SPA 프레임워크는 서버 렌더링을 지원하는 SEO 대응 기술이 이미 존재하고 있어 SEO 대응이 필요한 페이지에 대해서는 선별적 SEO 대응이 가능하다.
+SPA는 서버 렌더링 방식이 아닌 자바스크립트 기반 비동기 모델(클라이언트 렌더링 방식)이다. 따라서 SEO는 언제나 단점으로 부각되어 왔던 이슈이다.
+하지만 SPA는 정보의 제공을 위한 웹페이지보다는 애플리케이션에 적합한 기술이므로 SEO 이슈는 심각한 문제로 볼 수 없다.
+Angular 또는 React 등의 SPA 프레임워크는 서버 렌더링을 지원하는 SEO 대응 기술이 이미 존재하고 있어 SEO 대응이 필요한 페이지에 대해서는 선별적 SEO 대응이 가능하다.
 ```
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/BNHR6IQJGZs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<!-- ```html
+<iframe
+  width="560"
+  height="315"
+  src="https://www.youtube.com/embed/BNHR6IQJGZs"
+  frameborder="0"
+  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen
+></iframe>
+``` -->
+
+[![](https://img.youtube.com/vi/BNHR6IQJGZs/0.jpg)](https://www.youtube.com/embed/BNHR6IQJGZs)
 
 **3. 보안 문제**
 
