@@ -52,6 +52,10 @@ Content-Security-Policy 헤더를 이용하면, 동일하지 않은 출처에 �
 [Content-Security-Policy ](https://developers.google.com/web/fundamentals/security/csp/?hl=ko)
 
 ```
+Content-Security-Policy: script-src 'self' https://apis.google.com
+```
+
+```
 브라우저는 소스에 관계없이 페이지에서 요청하는 코드라면 무엇이든 다운로드하여 실행합니다.
 
 서버에서 제공하는 모든 것 을 맹목적으로 신뢰하는 대신, CSP는 신뢰할 수 있는 콘텐츠 소스의 허용 목록을 생성할 수 있게 해주는 Content-Security-Policy HTTP 헤더를 정의하고 브라우저에는 이런 소스에서 받은 리소스만 실행하거나 렌더링할 것을 지시합니다. 공격자가 스크립트를 주입할 허점을 찾을 수도 있겠지만, 그 스크립트가 허용 목록과 일치하지 않을 것이므로 실행할 수 없을 것입니다.
@@ -70,21 +74,24 @@ CORS 방식은 요청을 받은 웹서버가 허용할 경우에는 다른 도�
 
 ### CORS 작동방식
 
-**Preflight request (사전 요청)** 요청하려는 URL이 외부 도메인일 경우 웹 브라우저는 preflight요청을 먼저 날리게 된다. preflight 요청은 실제로 요청하려는 경로와 같은 URL에 대해서 옵션 메서드로 요총을 미리 날려보고 요청을 할 수 있는 권한이 있는지 확인합니다.
+**Preflight request (사전 요청)** 요청하려는 URL이 외부 도메인일 경우 웹 브라우저는 `preflight요청`을 먼저 날리게 된다. `preflight요청`은 실제로 요청하려는 경로와 같은 URL에 대해서 옵션 메서드로 요총을 미리 날려보고 요청을 할 수 있는 권한이 있는지 확인합니다.
 
 이 방식으로 CORS요청을 편법 없이 하기 위해서는 클라이언트의 처리만으로 안되고 `해당 서버 측에서의 추가 처리`사항이 필요합니다.
 
+![](./asset/cors.png)
+
 ### Cross-origin 요청의 위험성
 
-만약 mywebsite.com에서 서비스 중인 웹 사이트는 mywebsite.com/api 에서 REST API를 통해 필요한 정보를 얻습니다. mywebsite.com/api 경로에 대한 인증은 쿠키(사용자의 정보)로 이루어지고 있습니다.
+1. 만약 mywebsite.com에서 서비스 중인 웹 사이트는 mywebsite.com/api 에서 REST API를 통해 필요한 정보를 얻습니다.
+1. mywebsite.com/api 경로에 대한 인증은 쿠키(사용자의 정보)로 이루어지고 있습니다.
 
-그런데 만약 evil.com 웹 사이트의 스크립트에서 mywebsite.com API에 요청을 마음대로 보낼 수 있다면, 이미 my-website.com 도메인에 대해 브라우저에 저장된 쿠키를 이용해서 API를 마음대로 호출할 수 있을 것입니다.
+그런데 만약 evil.com 웹 사이트의 스크립트에서 mywebsite.com API에 요청을 마음대로 보낼 수 있다면, 이미 **my-website.com 도메인에 대해 브라우저에 저장된 쿠키를 이용해서 API를 마음대로 호출할 수 있을 것입니다.**
 
 ### 서버에서 CORS  요청 핸들링하기
 
 서버로 날아온 preflight 요청을 처리하여 웹 브라우저에서 실제 요청을 날릴 수 있도록 해줍니다.
 
-`가장 쉬운방법은` 모든 외부 도메인에서 모든 요청을 허용하는 방법입니다.
+`가장 쉬운방법은` -> 모든 외부 도메인에서 모든 요청을 허용하는 방법입니다.
 
 preflight요청을 받기 위해 옵션 메서드의 요청을 받아서 컨트롤해야 합니다. 모든 요청의 응답에 아래 header를 추가합니다.
 
@@ -113,13 +120,11 @@ Access-Control-Allow-Origin : *
 | Access-Control-Allow-Methods               | 요청을 허용하는 매서드. 기본값은 GET, POST라고 보면 된다. 이 해더가 없으면 GET과 POST 요청만 가능하다. 만약 이 해더가 지정이 되어 있으면, 클라이언트에서는 해더값에 해당하는 메서드일 경우에만 실제 요청을 시도하게 된다. |
 | Access-Control-Allow-Headers               | 요청을 허용하는 매서드.                                                                                                                                                                                                   |
 
-위의 request header 값을 보고 response header에 해당 출처에 허용하는 요청 스펙을 알려주는 구현을 하면 됩니다. Filter나 Interceptor등을 통해 구현해야 합니다. 그리고 최근에 springframework에서 CORS supprt 기능이 추가되었습니다. 4.2 이상 버전부터 인 것으로 보인다. spring mvc 스펙에 추가적인 어노테이션으로 외부 도메인 접속에 대한 핸들링을 지원합니다.
-
 ## 결론적으로
 
 ### 서버
 
-1. 서버가 이 스펙을 ㅈ원한다고 해서 다른 보안정책을 마련하지 않으면 안된다.
+1. 서버가 이 스펙을 지원한다고 해서 다른 보안정책을 마련하지 않으면 안된다.
 1. 일반적인 웹 브라우저에서 스크립트에 의한 Ajax 요청만 적용을 받을 수있다고 생각해야된다.
 1. open API 같은 것을 개발중리아면 클라이언트가 각종 편법들을 동원해서 서버에 접근하지 않아도 되도록 CORS요청을 핸들링 해줘야한다.
 
@@ -127,10 +132,12 @@ Access-Control-Allow-Origin : *
 
 1. **개발자가 데스트 혹은 개발단계에서 쉽게 요청하기**: 웹 브라우저 실행 옵션이나 플로그인을 통한 CORS 회피
 1. **CORS구현이 안되어 있는 서버로 ajax요청을 해야 하지만 서버 쪽 컨트롤이 불가능할 경우**: jsonp방식으로 요청
-1. **Ajax요청을 해야 하는 다른 도메인의 서버를 클라이언트와 같이 개발하거나 서버 개발 쪽 수정 요청이 가능한 경우**: 서버에서 CORS 요청이 허용되도록 구현
+1. **Ajax요청을 해야 하는 다른 도메인의 서버를 클라이언트와 같이 개발하거나 서버 개발 쪽 수정 요청이 가능한 경우**: 서버에서 CORS 요청이 허용되도록 구현, [cors 미들웨어](https://www.npmjs.com/package/cors#simple-usage-enable-all-cors-requests)를 사용
+1. 프론트엔드와 API서버를 **같은 도메인**으로 제공한다.: CORS적용 안하면 됨
 
 # HTTP/ HTTPS
 
+![](https://seopressor.com/wp-content/uploads/2017/07/HTTP-vs-HTTPS.png)
 Web browser와 Web server 통신을 규칙인 HTTP/HTTPS
 
 > **웹구성 4가지**\
@@ -160,9 +167,12 @@ http는 Request와 Response를 나나냅니다.  HTML, CSS, JS, 이미지 등...
 
 ![HTTPS](https://i.imgur.com/tq9mmGg.png)
 
-브라우저와 연결된 웹 사이트간에 데이터를 전송하는 프로토콜 인 HTTP의 보안 버전입니다.
+**2000년 5월 HTTPS는 공식적으로 RFC 2818에 규정되었습니다.**
+참고로 네이버는 2017년에 https로 변경되어답니다. 우리나라는 사용자의 보안을 고려하지 않는거죠~ 🤬
 
-**HTTPS 끝의 "S"**는 **보안**을 나타냅니다. 그것은 귀하의 브라우저와 웹 사이틀 간의 모든 통신이 암호화되었음을 의미합니다.
+HTTPS는 브라우저와 연결된 웹 사이트간에 데이터를 전송하는 프로토콜 인 `HTTP의 보안 버전`입니다.
+
+**HTTPS 끝의 S**는 **보안**을 나타냅니다. 그것은 귀하의 브라우저와 웹 사이틀 간의 모든 통신이 암호화되었음을 의미합니다.
 
 웹브라우저는 주소 표시 줄에 자물쇠 아이콘을 표시하여 HTTPS 연결이 유효함을 시각적으로 나타냅니다.
 
@@ -179,22 +189,20 @@ HTTPS와 SSL를 같은 의미로 이해하지만. 이것은 맞기도 틀리기�
 > 🔖 CA (Certificate Authority)\
 > 디지털 인증를 제공하는 공인 기업
 
+![](https://i.imgur.com/NWmUEzb.png)
+
+- 전자서명방식이 SSL인증서 방법과 동일하다.
+- 전자 서명으로 누가 메시지를 썼는지 알려주고, 메시지가 위조되지 않았음을 증명할 수 있다.
+- 공개키, 비공개키는 데이터 제공자의 신원을 보장
+- 비공개의 소유자가 비공개 키를 이용해 정보 암호화 -> 공개키와 함께 암호화된 정보를 전송 -> 수신자는 공개키는 암호화된 정보를 복호화
+- 암호화된 데이터를 공개키를 가지고 복호화 할 수 있다는 것은 그 데이터가 공개키와 쌍을 이루는 비공개키에 의해서 암호화 되었다는 것을 의미한다.
+- 공개키가 데이터를 제공한 사람의 신원을 보장해주게 되는 것이다.
+
 ### SSL 인증서의 장점 및 역할
 
 - 통신 내용이 노출, 변경되는 것을 방지
 - 클라이언트가 접속하려는 서버가 신뢰 할 수 있는 서버인지 확인가능
 - SSL통신에 사용할 공개키를 클라이언트에게 제공
-
-### SSL 암호화 종류
-
-**1. 대칭키**
-암호를 만드는 행위인 암호화를 할 때 사용하는 일종의 비밀번호을 키라고 한다.
-
-> 🔖 인코딩, 디코딩\
-> 인코딩이랑 정보를 부호화/암호화, 디코딩은 부호화/암호화를 해제
-
-**2. 공개키**
-TODO
 
 ### SSL 동작방법
 
@@ -216,8 +224,6 @@ TODO
 
 ![](http://optimal.inven.co.kr/upload/2018/08/26/bbs/i16228280124.gif)
 
-[HTTPS는 HTTP보다 빠르다](https://tech.ssut.me/https-is-faster-than-http/)
-
 [확인해볼까요???? 누가 빠르나?](http://www.httpvshttps.com/)
 
 **2. 구글 노출 랭킹에 도움이 된다.** ✔︎  
@@ -227,6 +233,12 @@ TODO
 ![](https://gobooki.net/wp-content/uploads/2018/07/ios-https.png)
 
 **4. PWA(Progressive Web Apps)에는 https만 가능**
+
+<!-- 프로그레시브 웹 앱 -->
+
+> PWA(Progressive Web Apps)\
+> 웹의 장점과 앱의 장점을 결합한 환경입니다 웹앱인거 같음.
+
 ![](https://gobooki.net/wp-content/uploads/2018/07/progressive-web-app.png)
 
 **5. 지리정보, 자동기입 등의 모든 API는 https가 필요함**
@@ -234,7 +246,16 @@ TODO
 
 **6. https는 도입비용이 비싸지 않음**
 
+> 타브리즈 디렉터는 "`인증 비용`을 `무료`로 해주는 업체들이 늘었고 `성능 저하도 거의 없다`" 설치가 조금 복잡하더라도 그건 이용자들의 보안을 위해서라면 기업들이 최소한으로 해야 할 것"이라고 강조했다.
+
+![](https://gobooki.net/wp-content/uploads/2018/07/Price-of-HTTPS-Certificate.png)
+
 **7. 안전하다.**
+![](https://seopressor.com/wp-content/uploads/2017/07/Difference-Between-HTTP-and-HTTPS.png)
+
+### HTTPS 파일을 HTTP로 서빙
+
+[HTTPS는 HTTP보다 빠르다 (다시 읽어보기)](https://tech.ssut.me/https-is-faster-than-http/)
 
 # HTTP Cache
 
@@ -267,19 +288,44 @@ Linux: F5
 
 일반 사용자를 위해 만들어진것들을 소개 하겠습니다.
 
-### 1. cache-control
+### Cache 관련 헤더
 
-TODO
+사실 어떻게 cache 헤더를 적용하는지 모르겠지만.... 서버에서 하는거 같아요.... 아파치동작을 설정하는 conf파일에 캐시설정을 하더라구요...넣더라구요...
 
-### 2. pragma
+**Cache-Control**
+(요청, 응답) 캐시와 관련된 다양한 기능을 하는 지시자를 포함. no-cache, max-age가 많이 사용됨. no-cache, max-age=0 지시자는 캐시를 사용하지 않도록 하거나, 캐시를 아직도 쓸 수 있는지 검증하기 위해 사용됨 (각각의 자세한 의미)
 
-TODO
+**ETag**
+(응답) 캐시의 검증을 위해 사용되는 자원의 식별자. 주로 자원의 해시값이 사용되나, 마지막으로 수정된 시각, 혹은 버전 넘버를 사용하기도 함
+
+**Expires**
+(응답) 캐시를 만료시킬 시각을 서버에서 명시적으로 지정
+
+**Last-Modified**
+(응답) 원래 자료가 마지막으로 수정된 시각
+
+**If-None-Match**
+(요청) 검증을 위해 사용됨. 이전에 저장해두었던 자원의 ETag 값을 If-None-Match 헤더의 값으로 요청에 포함시켜서 보내면, 서버는 해당 경로에 있는 자원의 ETag와 비교해보고 자원의 전송 여부를 결정
+
+**If-Modified-Since**
+(요청) 검증을 위해 사용됨. 이전에 저장해두었던 자원의 Last-Modified 값을 If-Modified-Since 헤더의 값으로 요청에 포함시켜서 보내면, 서버는 해당 경로에 있는 자원의 Last-Modified와 비교해보고 자원의 전송 여부를 결정
 
 ### 캐시적용
 
-TODO
+- 브라우저는 이미 캐시를 잘 활용하도록 만들어져 있습니다.
+- Express는 이미 캐시를 잘 활용하도록 만들어져 있습니다.
+- Netlify는 이미 캐시를 잘 활용하도록 만들어져 있습니다.
+- 오예!!!!!!!!!!!!!!!!!
 
-[생활코딩 httpCache 강의](https://opentutorials.org/module/3830/22985)
+일단은 별다른 추가작업 없이도 편하게 캐시 기능을 사용할 수 있지만, 우리가 원하는대로 캐시가 동작하지 않을 때 그 원인을 파악하기 위해 캐시 관련 헤더는 숙지해두는 것이 좋습니다. 그리고 HTTP method를 용도에 맞게 사용하는 것도 중요합니다.
+
+[No-Cache방법](https://support.microsoft.com/ko-kr/help/234067/how-to-prevent-caching-in-internet-explorer)
+
+### 캐쉬정책(영상으로 설명을 대신합니다.)
+
+[![](https://img.youtube.com/vi/kmdQlpIQTdE/0.jpg)](https://www.youtube.com/embed/kmdQlpIQTdE)
+
+[생활코딩 httpCache 강의(나는 적용하는것도 알고 싶다!!!)](https://opentutorials.org/module/3830/22985)
 
 # 🎉 (추가) 개발자가 꼭 알아야 할 보안
 
@@ -288,7 +334,15 @@ TODO
 - 활용해 보아요.📝\
   [개발자가 알아할 보안리스트](https://github.com/FallibleInc/security-guide-for-developers/blob/master/security-checklist.md)
 
+# 참고할 링크
+
+[seopressor](https://seopressor.com/blog/http-vs-https/)
+
+[https 좋은점](https://developers.google.com/web/fundamentals/security/encrypt-in-transit/why-https?hl=ko)
+
+[wayhome25](https://wayhome25.github.io/cs/2018/03/11/ssl-https/)
+
 # 면접 문제
 
 1. CORS에 대해 설명할 수 있나?
-1. http 프로토콜에서 https이미지를 불러올 수 있나? 불러온다면 어떠한 문제가 있을까. warning을 없앨 수 있는 방법은 무엇일까?
+1. (선택사항🐶) http 프로토콜에서 https이미지를 불러올 수 있나? 불러온다면 어떠한 문제가 있을까. warning을 없앨 수 있는 방법은 무엇일까?
