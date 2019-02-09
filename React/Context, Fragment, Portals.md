@@ -69,8 +69,159 @@ Redux 나 MobX 같은 라이브러리 또는 `Context API`을 통하여 전역 �
 
 [Context API가 Redux를 대체할 수 있을까요?](https://medium.com/@Dev_Bono/context-api%EA%B0%80-redux%EB%A5%BC-%EB%8C%80%EC%B2%B4%ED%95%A0-%EC%88%98-%EC%9E%88%EC%9D%84%EA%B9%8C%EC%9A%94-76a6209b369b)
 
+# Fragments <>
+
+`Fragment`를 사용하면 DOM에 별도 노드를 추가하지 않고 자식 목록을 그룹화 할 수 있습니다.
+
+```js
+render() {
+  return (
+    <React.Fragment>
+      <ChildA />
+      <ChildB />
+      <ChildC />
+    </React.Fragment>
+  );
+}
+
+// 모든 유명한 도구에서 아직 지원하지 않는다고 합니다.
+render() {
+  return (
+    <>
+      <ChildA />
+      <ChildB />
+      <ChildC />
+    </>
+  );
+}
+```
+
+## 동기
+
+컴포넌트 분리를 하면서 HTML이 유효하지 못하는 경우세 사용 합니다.
+
+[동기 예제 스크롤 20%](https://reactjs-org-ko.netlify.com/docs/fragments.html)
+
+## 사용법
+
+### <React.Fragment>
+
+```js
+class Columns extends React.Component {
+  render() {
+    return (
+      <React.Fragment>
+        <td>Hello</td>
+        <td>World</td>
+      </React.Fragment>
+    );
+  }
+}
+```
+
+### 짧은 구문 <>
+
+fragment를 선언하기 위해 빈 태그로 짧게 작성 할 수 있습니다.
+
+```js
+class Columns extends React.Component {
+  render() {
+    return (
+      <>
+        <td>Hello</td>
+        <td>World</td>
+      </>
+    );
+  }
+}
+```
+
+- `<></>` 는 key나 속성을 지원하지 않는다.
+- 많은 도구에서 아직 지원하지 않기 때문에 명시적으로 `<React.Fragment>` 작성 해야될 수 있습니다.
+- 문법을 지원하는 바벨7입니다. 최신 버전
+
+### Key가 있는 Fragment
+
+```js
+function Glossary(props) {
+  return (
+    <dl>
+      {props.items.map(item => (
+        // Without the `key`, React will fire a key warning
+        <React.Fragment key={item.id}>
+          <dt>{item.term}</dt>
+          <dd>{item.description}</dd>
+        </React.Fragment>
+      ))}
+    </dl>
+  );
+}
+```
+
+- `<React.Fragment>`구문을 사용해 Fragments를 선언합니다.
+- `Key`는 `Fragments`에 전달 가능한 유일한 속성입니다.
+
+# 3. Portals
+
+![](https://images.velog.io/post-images/velopert/7d68fae0-ddf8-11e8-b996-41fb520cde45/react-protal.png)
+
+`portals`는 리액트 프로젝트에서 컴포넌트를 렌더링하게 될 때, UI를 어디에 렌더링 시킬지 DOM을 사전에 선택하여 부모 컴포넌트의 바깥에 렌더링 할 수 있게 해주는 기능
+
+> React v16에서 도입된 기능입니다.
+
+```js
+ReactDOM.createPortal(child, container);
+```
+
+## 3.1. 사용예시
+
+기존의 React에서 컴포넌트를 렌더링 하게 될 때, children은 부모컴포넌트의 DOM 내부에 렌더링 되어야 했습니다.
+
+```js
+render() {
+  // React mounts a new div and renders the children into it
+  return (
+    <div>
+      {this.props.children}
+    </div>
+  );
+}
+```
+
+`Portals`를 사용하면 DOM의 계층구조 시스템에 종속되지 않으면서 컴포넌트를 렌더링 할수 있습니다. 즉, DOM 내의 다른 위치에 자식을 넣는것이 유효합니다.
+
+```js
+const MyPortal = ({ children }) => {
+  const el = document.getElementById("my-portal");
+  return ReactDOM.createPortal(children, el);
+};
+```
+
+![](https://images.velog.io/post-images/velopert/27cb5dd0-debb-11e8-b0ac-733089d7b15c/image.png)
+
+> `Portals`를 사용하면 root > App 내부가 아니라 그 바깥의 `<div id="modal"></div>` 안에 렌더링되었습니다.
+
+## 3.2. 사용 사례
+
+- 부모 컴포넌트가 `overflow: hidden`이나 `z-index` 스타일을 가지지만, 자식이 컨테이너에서 시각적으로 "이탈해야 하는 경우"
+- 다이얼로그, 호버카드, 툴팁
+
+[MyModal 만들기 실습](https://velog.io/@velopert/react-portals)
+
+## 3.3 정리
+
+렌더링을 원하는 DOM에 자유자재로 할 수 있습니다. 참고로 타켓DOM이 꼭 App 바깥이 아니여도 됩니다. 리액트 앱 내부에 다른곳에 렌더링 하고 싶을때도 동일한 방식입니다.
+
+![](./asset/review.png)
+
 # 참고한 링크
 
-[React DOCS](https://reactjs-org-ko.netlify.com/docs/context.html)
+[React DOCS context](https://reactjs-org-ko.netlify.com/docs/context.html)
 
 [velopert Context](https://velopert.com/3606)
+
+[React DOCS fragments](https://reactjs-org-ko.netlify.com/docs/fragments.html)
+
+[velog Poetals](https://velog.io/@velopert/react-portals)
+
+[React DOCS Portals ](https://reactjs-org-ko.netlify.com/docs/portals.html)
