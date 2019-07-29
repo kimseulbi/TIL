@@ -23,3 +23,32 @@
 
 ## DELETE
 * 삭제 버튼 클릭시 삭제
+
+
+
+## 참고사항 
+
+1. export default 축약 - 한개만 내보냄 (export default)
+1. parameter === []
+1. payload가 어떻게 쓰이는지 알아야함 
+```js
+const payload = {
+    id: input,
+    date: this.nowDate()
+}
+```
+1. 두개이상이면 객체로 사용 
+1. 한곳에서만 사용한다면 패키지화 한다. 
+```js
+        let year = date.getFullYear(),
+         month = date.getMonth() + 1,
+         day = date.getDate(),
+         hour = date.getHours(),
+         minutes = date.getMinutes(),
+         seconds = date.getSeconds(),
+         ampm = hour >= 12 ? 'pm' : 'am';
+```
+1. CustomEvent 
+1. this최소화 
+1. error log 
+1. get,set 사용 
